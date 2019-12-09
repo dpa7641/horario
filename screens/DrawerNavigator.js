@@ -1,23 +1,20 @@
 import React, { Component } from "react";
-import {View,Text,StyleSheet} from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet
+} from "react-native";
 
-import HomeScreen from './HomeScreen'
-import { DrawerNavigator, StackNavigator } from 'react-navigation'
-
-import HomeScreenTabNavigator from './HomeScreenTabNavigator'
-
-const InnerStackNavigator = new StackNavigator({
-    TabNavigator: {
-        screen: HomeScreenTabNavigator
+class DrawerNavigator extends Component {
+    render() {
+        return (
+            <View style={styles.container}>
+                <Text>DrawerNavigator</Text>
+            </View>
+        );
     }
-})
+}
 
-const AppDrawerNavigator = new DrawerNavigator({
-    HomeScreen: { screen: InnerStackNavigator }
-})
-
-
-export default AppDrawerNavigator;
 
 const styles = StyleSheet.create({
     container: {
@@ -26,3 +23,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+export default DrawerNavigator;

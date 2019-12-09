@@ -1,21 +1,15 @@
 import React, { Component } from "react";
-import {
-    View,
-    Text,
-    StyleSheet,
-    Button
-} from "react-native";
+import {View,StyleSheet,Button} from "react-native";
 
 class LoginScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Button title="Complete Login" onPress={() => this.props.navigation.navigate('DrawerNavigator')} />
+                <Button title="Login" onPress={() => this.props.navigation.navigate('DrawScreen')} />
             </View>
         );
     }
 }
-export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
@@ -24,3 +18,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+export default LoginScreen;

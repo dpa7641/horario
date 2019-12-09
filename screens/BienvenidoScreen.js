@@ -2,11 +2,6 @@ import React, { Component } from "react";
 import {View,StyleSheet,Button} from "react-native";
 
 class BienvenidoScreen extends Component {
-
-    static navigationOptions = {
-        header: 'none'
-    }
-
     render() {
         return (
             <View style={styles.container}>
