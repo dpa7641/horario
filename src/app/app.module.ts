@@ -10,22 +10,26 @@ import { AppComponent } from './app.component';
 //implementaciones realizadas por mi
 
 //coneccion con el servidor para login
-import { IonicStorageModule } from '@ionic/storage';
-import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule, Storage } from '@ionic/storage';
 //implementacion de lector de codigoQR
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { QRScanner } from '@ionic-native/qr-scanner/ngx';
 //login con facebook
 import { Facebook } from '@ionic-native/facebook/ngx';
-//firebase
-import { AngularFireModule } from 'angularfire2';
-import { environment } from '../environments/environment';
-import { AngularFirestoreModule} from 'angularfire2/firestore';
-import { AngularFireDatabase } from '@angular/fire/database';
-import { AngularFireAuthModule } from 'angularfire2/auth'
 //pipes para filtros
 import { PipesModule } from './pipes/pipes.module';
+//rest api
+import { HttpClientModule} from '@angular/common/http';
+import {JwtModule, JWT_OPTIONS} from '@auth0/angular-jwt';
 
+
+export function jwtOptionsFactory(storage){
+  return{
+    tokenGetter: () => {
+      return storage.get('access_token');
+    }
+  }
+}
 
 
 
@@ -34,11 +38,13 @@ import { PipesModule } from './pipes/pipes.module';
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule,
     IonicStorageModule.forRoot(),
+    JwtModule.forRoot({
+      jwtOptionsProvider:{
+        provide: JWT_OPTIONS, useFactory: jwtOptionsFactory, deps: [Storage]
+      }
+    }),
     HttpClientModule,
-    PipesModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFirestoreModule,
-    AngularFireAuthModule
+    PipesModule
   ],
   providers: [
     StatusBar,
@@ -47,7 +53,7 @@ import { PipesModule } from './pipes/pipes.module';
     BarcodeScanner,
     QRScanner,
     Facebook,
-    AngularFireDatabase
+    HttpClientModule
   ],
   bootstrap: [AppComponent]
 })
