@@ -4,39 +4,21 @@
     </ion-toolbar>
   </ion-header>
   
-  <ion-content>
-
-      <div *ngIf="!loginCambio">
-    <ion-list>
+  <ion-content >
+    <form [formGroup]="credentialsForm" (ngSubmit)="onSubmit()">
+   
       <ion-item>
-          <ion-label>Email Address</ion-label>
-          <ion-input type="text" [(ngModel)]="user.email"></ion-input>
-        </ion-item>
-      
-        <ion-item>
-          <ion-label>Password</ion-label>
-          <ion-input type="password" [(ngModel)]="user.password"></ion-input>
-        </ion-item>
-    </ion-list>
-    <ion-button fill="solid" espand="block" (click)="olvidar()">Olvidaste tu contraseña?</ion-button>
-    <ion-button fill="solid" espand="block" (click)="login()">Login</ion-button>
-    <ion-button fill="solid" espand="block" (click)="registrar()">Crear Cuenta</ion-button>
-  </div>
-
-
-
-  <div *ngIf="loginCambio">
-
+        <ion-label position="floating">Email</ion-label>
+        <ion-input type="email" formControlName="email"></ion-input>
+      </ion-item>
+   
       <ion-item>
-          <ion-label>Email Address</ion-label>
-          <ion-input type="text" [(ngModel)]="user.email"></ion-input>
-        </ion-item>
-      <ion-button fill="solid" espand="block" (click)="olvidar()">ya lo recorve</ion-button>
-  </div>
-  
-  
-    
-    
-  
-  
+        <ion-label position="floating">Password</ion-label>
+        <ion-input type="password" formControlName="password"></ion-input>
+      </ion-item>
+   
+      <ion-button expand="full" type="submit" [disabled]="!credentialsForm.valid">Login</ion-button>
+      <ion-button expand="full" type="button" (click)="registrar()" [disabled]="!credentialsForm.valid">Register</ion-button>
+   
+    </form>
   </ion-content>

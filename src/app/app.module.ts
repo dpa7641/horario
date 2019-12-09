@@ -27,7 +27,8 @@ export function jwtOptionsFactory(storage){
   return{
     tokenGetter: () => {
       return storage.get('access_token');
-    }
+    },
+    whitelistedDomains: ['https://afternoon-refuge-46845.herokuapp.com/']
   }
 }
 

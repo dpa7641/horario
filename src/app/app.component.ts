@@ -7,7 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 //mis importaciones
 import { Router } from '@angular/router';
 //rest api
-
+import { AuthService } from './services/auth.service'
 
 @Component({
   selector: 'app-root',
@@ -22,6 +22,23 @@ export class AppComponent {
       private splashScreen: SplashScreen,
       private statusBar: StatusBar,
       private router: Router,
-    ) {}
+      private authService: AuthService
+    ) {this.initializeApp();}
+
+    initializeApp() {
+      this.platform.ready().then(() => {
+        this.statusBar.styleDefault();
+        this.splashScreen.hide();
+   
+        this.authService.authenticationState.subscribe(state => {
+          if (state) {
+            this.router.navigate(['/home/horario']);
+          } else {
+            this.router.navigate(['/login']);
+          }
+        });
+   
+      });
+    }
       
   }

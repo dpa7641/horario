@@ -4,12 +4,9 @@ import { Router } from '@angular/router';
 import { NavController, LoadingController } from '@ionic/angular';
 //import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
-
-export class User {
-  email: string;
-  password: string;
-}
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -17,48 +14,27 @@ export class User {
   styleUrls: ['./login.page.scss']
 })
 export class LoginPage implements OnInit {
-
-  public user:User = new User();
-  //cambio en html
-  loginCambio: boolean;
-
  
-  constructor(public navCtrl: NavController,
-    //private fb: Facebook,
-    private auth: AuthService,
-    public loadingController: LoadingController,
-    private router: Router
-  ) {}
+  credentialsForm: FormGroup;
  
-  ngOnInit() {}
-
-  credentials = {
-    email: this.user.email,
-    pw: this.user.password
-  };
-  async login() {
-    this.auth.login(this.credentials).subscribe(async res => {
-      if (res) {
-        this.router.navigateByUrl('home/horario');
-      } else {
-        console.log("error de api");
-      }
+  constructor(private formBuilder: FormBuilder, private authService: AuthService) { }
+ 
+  ngOnInit() {
+    this.credentialsForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
-  
-
-  
-  
-  registrar(){
-    this.router.navigate(['/registrar']);
+ 
+  onSubmit() {
+    this.authService.login(this.credentialsForm.value).subscribe();
   }
-
-
-
-
-  olvidar(){  
-    this.loginCambio = !this.loginCambio;
+ 
+  register() {
+    this.authService.register(this.credentialsForm.value).subscribe(res => {
+      // Call Login to automatically login the new user
+      this.authService.login(this.credentialsForm.value).subscribe();
+    });
   }
-
-
+ 
 }

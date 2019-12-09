@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'https://afternoon-refuge-46845.herokuapp.com/api/activities'
+  apiUrl: 'https://afternoon-refuge-46845.herokuapp.com/'
 };
 
 /*

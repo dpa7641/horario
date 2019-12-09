@@ -1,77 +1,99 @@
-import { Platform } from '@ionic/angular';
+import { Platform, AlertController } from '@ionic/angular';
 import { Injectable } from '@angular/core';
-import { Storage } from '@ionic/storage';
-import { BehaviorSubject, Observable, from, of } from 'rxjs';
-import { take, map, switchMap } from 'rxjs/operators';
-import { JwtHelperService } from "@auth0/angular-jwt";
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-
-const helper = new JwtHelperService();
-const TOKEN_KEY = 'jwt-token';
-
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Storage } from '@ionic/storage';
+import { environment } from '../../environments/environment';
+import { tap, catchError } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+ 
+const TOKEN_KEY = 'access_token';
+ 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  public user: Observable<any>;
-  private userData = new BehaviorSubject(null);
-
-  constructor(
-    private storage: Storage, 
-    private http: HttpClient, 
-    private plt: Platform, 
-    private router: Router) { this.loadStoredToken();  }
-
-  loadStoredToken() {
-    let platformObs = from(this.plt.ready());
  
-    this.user = platformObs.pipe(
-      switchMap(() => {
-        return from(this.storage.get(TOKEN_KEY));
-      }),
-      map(token => {
-        if (token) {
-          let decoded = helper.decodeToken(token); 
-          this.userData.next(decoded);
-          return true;
+  url = environment.apiUrl;
+  user = null;
+  authenticationState = new BehaviorSubject(false);
+ 
+  constructor(private http: HttpClient, private helper: JwtHelperService, private storage: Storage,
+    private plt: Platform, private alertController: AlertController) {
+    this.plt.ready().then(() => {
+      this.checkToken();
+    });
+  }
+ 
+  checkToken() {
+    this.storage.get(TOKEN_KEY).then(token => {
+      if (token) {
+        let decoded = this.helper.decodeToken(token);
+        let isExpired = this.helper.isTokenExpired(token);
+ 
+        if (!isExpired) {
+          this.user = decoded;
+          this.authenticationState.next(true);
         } else {
-          return null;
+          this.storage.remove(TOKEN_KEY);
         }
-      })
-    );
+      }
+    });
   }
-
-  login(credentials: {email: string, pw: string} ) {
-    if (credentials.email != 'email' || credentials.pw != 'password') {
-      return of(null);
-    }
-    return this.http.get('https://afternoon-refuge-46845.herokuapp.com/api/activities').pipe(
-      take(1),
-      map(res => {
-        return `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9`;
-      }),
-      switchMap(token => {
-        let decoded = helper.decodeToken(token);
-        this.userData.next(decoded);
  
-        let storageObs = from(this.storage.set(TOKEN_KEY, token));
-        return storageObs;
+  register(credentials) {
+    return this.http.post(`${this.url}/api/register`, credentials).pipe(
+      catchError(e => {
+        this.showAlert(e.error.msg);
+        throw new Error(e);
       })
     );
   }
  
-  getUser() {
-    return this.userData.getValue();
+  login(credentials) {
+    return this.http.post(`${this.url}/api/getuser`, credentials)
+      .pipe(
+        tap(res => {
+          this.storage.set(TOKEN_KEY, res['token']);
+          this.user = this.helper.decodeToken(res['token']);
+          this.authenticationState.next(true);
+        }),
+        catchError(e => {
+          this.showAlert(e.error.msg);
+          throw new Error(e);
+        })
+      );
   }
  
   logout() {
     this.storage.remove(TOKEN_KEY).then(() => {
-      this.router.navigateByUrl('/');
-      this.userData.next(null);
+      this.authenticationState.next(false);
     });
   }
-
-
+ 
+  getSpecialData() {
+    return this.http.get(`${this.url}/api/special`).pipe(
+      catchError(e => {
+        let status = e.status;
+        if (status === 401) {
+          this.showAlert('You are not authorized for this!');
+          this.logout();
+        }
+        throw new Error(e);
+      })
+    )
+  }
+ 
+  isAuthenticated() {
+    return this.authenticationState.value;
+  }
+ 
+  showAlert(msg) {
+    let alert = this.alertController.create({
+      message: msg,
+      header: 'Error',
+      buttons: ['OK']
+    });
+    alert.then(alert => alert.present());
+  }
 }
