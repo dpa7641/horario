@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      {{ currentMonth }}
+    </ion-title>
+  </ion-toolbar> 
+</ion-header>
+
+<ion-content>
+
+  <div *ngIf="showAddEvent">
+    <ion-item>
+      <ion-label><b>Titulo:</b></ion-label>
+      <ion-input type="text" placeholder="Titulo" [(ngModel)]="newEvent.title"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label><b>Descripcion:</b></ion-label>
+      <ion-input type="text" placeholder="Descripcion" [(ngModel)]="newEvent.description"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label><b>Inicio</b></ion-label>
+      <ion-datetime doneText="OK" cancelText="Annuler" i18n displayFormat="DD/MM/YYYY HH:mm" pickerFormat="MMM D HH:mm" [(ngModel)]="newEvent.startTime" [min]="minDate"></ion-datetime>
+    </ion-item>
+    <ion-item>
+      <ion-label><b>Fin</b></ion-label>
+      <ion-datetime doneText="OK" cancelText="Annuler" displayFormat="DD/MM/YYYY HH:mm" pickerFormat="MMM D HH:mm" [(ngModel)]="newEvent.endTime" [min]="minDate"></ion-datetime>
+    </ion-item>
+    <ion-button color="warning" expand="block" (click)="addEvent()">Crear Nueva Actividad</ion-button>
+  </div>
+
+ <calendar *ngIf="!showAddEvent"
+  (onEventSelected)="onEventSelected($event)"
+  (onTitleChanged)="onViewTitleChanged($event)"
+  (onTimeSelected)="onTimeSelected($event)"
+  [eventSource]="allEventos"
+  calendarMode="month" 
+  startHour="6"
+  endHour="20"
+  step="30"
+  startingDayWeek="1"
+  [currentDate]="currentDate">
+</calendar>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button (click)="showHideForm()">
+    <ion-icon *ngIf="!showAddEvent" name="add"></ion-icon>
+    <ion-icon *ngIf="showAddEvent" name="close"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+  
+
+ 
+ 
+</ion-content>

@@ -1,0 +1,7 @@
+{
+  "name": "int-schedule.mo",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

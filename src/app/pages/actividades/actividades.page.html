@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>actividades</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+
+<ion-content>
+    <div *ngIf="!adicionarActividad">
+    <ion-toolbar>
+        <ion-segment scrollable (ionChange) ="segmentChanged($event)" >
+            <ion-segment-button value="lunes">
+                <ion-label>lunes</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="martes">
+                  <ion-label>martes</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="miercoles">
+                    <ion-label>miercoles</ion-label>
+                  </ion-segment-button>
+                  <ion-segment-button value="jueves">
+                      <ion-label>jueves</ion-label>
+                    </ion-segment-button>
+                    <ion-segment-button value="viernes">
+                        <ion-label>viernes</ion-label>
+                      </ion-segment-button>
+                      <ion-segment-button value="sabado">
+                          <ion-label>sabado</ion-label>
+                        </ion-segment-button>
+              <ion-segment-button value="domingo">
+                  <ion-label>domingo</ion-label>
+                </ion-segment-button>
+          </ion-segment>
+      </ion-toolbar>
+
+
+
+
+    <ion-item *ngFor="let allActividad of allActividad  | filtro: publisher: 'dia' ">
+        <ion-label>
+            <p>{{allActividad.dia}}</p>
+        </ion-label>
+        <ion-label>
+            <p>{{allActividad.description}}</p>
+        </ion-label>
+    </ion-item>
+  </div>
+
+
+
+
+
+    <div *ngIf="adicionarActividad">
+        <ion-item>
+            <ion-label><b>Dia:</b></ion-label>
+            <ion-input type="text" placeholder="Dia de la semana" [(ngModel)]="newActivity.dia"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label><b>Descripcion:</b></ion-label>
+            <ion-input type="text" placeholder="descripcion" [(ngModel)]="newActivity.description"></ion-input>
+          </ion-item>
+          <ion-item>
+              <ion-label><b>Inicio</b></ion-label>
+              <ion-datetime doneText="OK" cancelText="Annuler" i18n displayFormat=" HH:mm" pickerFormat=" HH:mm" [(ngModel)]="newActivity.startTime" ></ion-datetime>
+            </ion-item>
+            <ion-item>
+              <ion-label><b>Fin</b></ion-label>
+              <ion-datetime doneText="OK" cancelText="Annuler" displayFormat=" HH:mm" pickerFormat=" HH:mm" [(ngModel)]="newActivity.endTime" ></ion-datetime>
+            </ion-item>
+          <ion-button color="warning" expand="block" (click)="addActividad()">Crear Actvidad en el horario</ion-button>
+    </div>
+
+
+
+
+
+
+    <!--** boton flotante de adicion de horarios  -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="mostrarFormHorario()">
+          <ion-icon *ngIf="!adicionarActividad" name="add"></ion-icon>
+          <ion-icon *ngIf="adicionarActividad" name="close"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
+</ion-content>
