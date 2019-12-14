@@ -3,15 +3,19 @@
     <ion-title>
       horario
     </ion-title>
-  </ion-toolbar> 
+  </ion-toolbar>
 </ion-header>
 
 <ion-content>
-
-  <div *ngIf="!adicionarHorario">    <!--** esta mostrando los horarios  -->
+  <div *ngIf="!adicionarHorario">
+    <!--** esta mostrando los horarios  -->
     <!--** desplege de los horarios del usuario  -->
     <ion-list>
-      <ion-item details *ngFor="let allHorario of allHorario" (click)="mostrarActividad()"  >
+      <ion-item
+        detail="true"
+        *ngFor="let allHorario of allHorario"
+        (click)="mostrarActividad()"
+      >
         <ion-label>
           <h1 value="nombreHorario">{{allHorario.title}}</h1>
           <h4>{{allHorario.description}}</h4>
@@ -20,17 +24,28 @@
     </ion-list>
   </div>
 
-  <div *ngIf="adicionarHorario">   <!--** esta mostrando la adicion de los horarios  -->
+  <div *ngIf="adicionarHorario">
+    <!--** esta mostrando la adicion de los horarios  -->
     <!--** texto de adicion de horarios  -->
-      <ion-item>
-        <ion-label><b>Horario:</b></ion-label>
-        <ion-input type="text" placeholder="Titulo" [(ngModel)]="newHorario.title"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label><b>Descripcion:</b></ion-label>
-        <ion-input type="text" placeholder="Descripcion" [(ngModel)]="newHorario.description"></ion-input>
-      </ion-item>
-      <ion-button color="warning" expand="block" (click)="addHorario()">Crear Horario</ion-button>
+    <ion-item>
+      <ion-label><b>Horario:</b></ion-label>
+      <ion-input
+        type="text"
+        placeholder="Titulo"
+        [(ngModel)]="newHorario.title"
+      ></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label><b>Descripcion:</b></ion-label>
+      <ion-input
+        type="text"
+        placeholder="Descripcion"
+        [(ngModel)]="newHorario.description"
+      ></ion-input>
+    </ion-item>
+    <ion-button color="warning" expand="block" (click)="addHorario()"
+      >Crear Horario</ion-button
+    >
   </div>
   <!--** boton flotante de adicion de horarios  -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
@@ -39,10 +54,4 @@
       <ion-icon *ngIf="adicionarHorario" name="close"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
-
-
-  
-
-
 </ion-content>
