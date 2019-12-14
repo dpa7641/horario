@@ -6,6 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 //mis importaciones
 import { AngularFireAuth } from '@angular/fire/auth';
+
 import { Router } from '@angular/router';
 
 @Component({
