@@ -1,0 +1,11 @@
+ion-content {
+  div {
+    margin: 20px;
+    ion-list {
+      ion-input {
+        margin: 5px;
+        border-bottom: 1px solid black;
+      }
+    }
+  }
+}
