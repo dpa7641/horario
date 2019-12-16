@@ -29,7 +29,9 @@ export class HorarioPage implements OnInit {
    }
 
   ngOnInit() {
-    this.loadHorario(); 
+    const user2 = firebase.auth().currentUser.providerData[0];
+    const correoUsuario = user2.uid;
+    this.loadHorario(correoUsuario); 
   }
 
 
@@ -62,22 +64,20 @@ mostrarFormHorario() {
 //array de carga de los horarios
 allHorario = [];
 //cargar horarios del usuario
-loadHorario() {
-  const user = firebase.auth().currentUser.providerData[0];
-  console.log(user.uid);
+loadHorario(data: String) {
   this.firebase.list('Horario').snapshotChanges(['child_added']).subscribe(actions => {
     this.allHorario = [];
-    actions.forEach(action => {
+    actions.filter(action => action.payload.exportVal().usuario == data).
+    forEach(action => {
       this.allHorario.push({
-        user: action.payload.exportVal().user,
+        user: action.payload.exportVal().usuario,
         title: action.payload.exportVal().title,
         description: action.payload.exportVal().description,
       });
     });
   });
-
-  
 }
+
 
 
 //horario = 'daniel';// falta corregir y aplicar
