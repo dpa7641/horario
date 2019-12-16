@@ -2,12 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {  NavController } from '@ionic/angular';
 
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-
-import {UserService} from '../../services/user.service';
-
 
 
 
@@ -31,15 +26,16 @@ export class SettingsPage implements OnInit {
     public navCtrl: NavController,
     private router: Router,
     private fireauth: AngularFireAuth,
-    private afs: AngularFirestore,
     private route: ActivatedRoute
-   ) {
+   ) { 
      this.route.queryParams.subscribe(params => {
+       console.log(params);
        if(params && params.special){
-          this.data = params.special; 
+          this.data = params.special
+          //this.data = JSON.parse(params.special)
        }
      });
-    }
+   }
 
   ngOnInit() {
     this.fireauth.auth.onAuthStateChanged(user => {
@@ -64,12 +60,5 @@ export class SettingsPage implements OnInit {
       this.router.navigate(['/']);
     })
   }
-
-
-
-  
- 
-
-
 
 }

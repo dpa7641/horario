@@ -2,12 +2,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import {  NavController, IonSegment } from '@ionic/angular';
-import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-
-
-
-
 
 @Component({
   selector: 'app-horario',
@@ -15,18 +10,13 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./horario.page.scss'],
 })
 
-
-
 export class HorarioPage implements OnInit {
 
-  
   mostrarActividades: boolean;//condicional de HTML al precionar el boton de adicionar un horario
   mostrarHorarios: boolean;//condicional de HTML al precionar el boton de adicionar un horario
   adicionarHorario: boolean;//condicional de HTML al precionar el boton de adicionar una actividad
 
 
-  
-  data: any;
 
   constructor(
     private firebase: AngularFireDatabase,
@@ -34,18 +24,10 @@ export class HorarioPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute
    ) { 
-    this.route.queryParams.subscribe(params => {
-      if(params && params.special){
-         this.data = params.special; 
-      }
-    });
-    console.log(this.data);
+    
    }
 
   ngOnInit() {
-    if(this.data.email == this.allHorario.user){
-
-    }
     this.loadHorario(); 
   }
 
@@ -59,7 +41,6 @@ newHorario = {
 //guardar horarios del usuario
 addHorario(){
   this.firebase.list('Horario').push({
-    user: this.data.email,
     title: this.newHorario.title,
     description: this.newHorario.description
   });
@@ -73,8 +54,6 @@ mostrarFormHorario() {
     description: ''
   };
 }
-
-
 
 
 //array de carga de los horarios
@@ -106,11 +85,6 @@ mostrarActividad(){
 
 }
 
-
-
-
-
-  
   
 }
 

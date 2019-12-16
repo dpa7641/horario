@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular'; 
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
+import { AuthService } from "../services/auth.service";
 
 export class User {
   email: string;
@@ -23,7 +23,8 @@ export class RegistrarPage implements OnInit {
   constructor(
     private router: Router,
     public navCtrl: NavController,
-     public fAuth: AngularFireAuth){}
+     public fAuth: AngularFireAuth,
+     private auth : AuthService){}
 
 
 
@@ -31,21 +32,15 @@ export class RegistrarPage implements OnInit {
   }
 
   async register() {
-    if(this.user.password !== this.user.cpassword){
-      console.log("error de contraseña");
+    if(this.user.password == this.user.cpassword){
+      this.auth.register(this.user.email, this.user.password,this.user.username).then( auth => {
+        this.router.navigate(['/login'])
+      }).catch(err => console.log(err));
+      
+    }else{
+      console.log("error de contraseña repetida");
     }
-    try {
-      var res = await this.fAuth.auth.createUserWithEmailAndPassword(
-        this.user.email,
-        this.user.password
-      );
-      if (res) {
-        console.log("Successfully registered!");
-        this.router.navigate(['/login']);
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    
   }
 
   login(){
