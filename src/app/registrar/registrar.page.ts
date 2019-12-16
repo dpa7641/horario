@@ -43,7 +43,6 @@ export class RegistrarPage implements OnInit {
         console.log("Successfully registered!");
         this.router.navigate(['/login']);
       }
-
     } catch (err) {
       console.error(err);
     }

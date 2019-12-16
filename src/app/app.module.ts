@@ -26,6 +26,8 @@ import { AngularFireAuthModule } from 'angularfire2/auth'
 //pipes para filtros
 import { PipesModule } from './pipes/pipes.module';
 
+import {UserService } from './services/user.service';
+
 
 
 
@@ -47,7 +49,8 @@ import { PipesModule } from './pipes/pipes.module';
     BarcodeScanner,
     QRScanner,
     Facebook,
-    AngularFireDatabase
+    AngularFireDatabase,
+    UserService
   ],
   bootstrap: [AppComponent]
 })

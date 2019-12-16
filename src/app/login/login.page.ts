@@ -1,18 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { NavController, LoadingController } from '@ionic/angular';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { auth } from 'firebase/app';
 import * as firebase from 'firebase';
 
-export class User {
-  email: string;
-  password: string;
-}
+import {UserService} from '../services/user.service';
 
- 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -24,14 +20,14 @@ export class LoginPage implements OnInit {
 
   loginCambio: boolean;
 
-  public user:User = new User();
+  email: string = "";
+  password: string = "";
 
-
-  
  
   constructor(public navCtrl: NavController,  public fireauth: AngularFireAuth,private fb: Facebook,
     public loadingController: LoadingController,
-    private router: Router
+    private router: Router,
+    public user: UserService
   ) {}
  
   ngOnInit() {
@@ -45,12 +41,10 @@ export class LoginPage implements OnInit {
   }
 
   async login() {
-    this.fireauth.auth.signInWithEmailAndPassword(
-      this.user.email, 
-      this.user.password).then(res => {
+    this.fireauth.auth.signInWithEmailAndPassword(this.email, this.password).then(res => {
       if (res.user) {
         console.log(res.user);
-        this.router.navigate(['/home/horario']);
+        this.router.navigate(['/home/settings'] );
       }
     })
     .catch(err => {
@@ -74,7 +68,7 @@ export class LoginPage implements OnInit {
 
 
   recover() {
-    this.fireauth.auth.sendPasswordResetEmail(this.user.email)
+    this.fireauth.auth.sendPasswordResetEmail(this.email)
       .then(data => {
         console.log(data);
         this.router.navigateByUrl('/login');
