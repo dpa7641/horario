@@ -1,14 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { NavController, LoadingController } from '@ionic/angular';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook/ngx';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth } from 'firebase/app';
 import * as firebase from 'firebase';
+import { AuthService } from "../services/auth.service";
 
-import {UserService} from '../services/user.service';
 
+
+export class User {
+  email: string;
+  password: string;
+}
+
+ 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -17,58 +23,39 @@ import {UserService} from '../services/user.service';
 export class LoginPage implements OnInit {
 
   loading: any;
-
   loginCambio: boolean;
+  public user:User = new User();
 
-  email: string = "";
-  password: string = "";
-
- 
   constructor(public navCtrl: NavController,  public fireauth: AngularFireAuth,private fb: Facebook,
     public loadingController: LoadingController,
     private router: Router,
-    public user: UserService
+    private authService: AuthService
   ) {}
  
   ngOnInit() {
-    this.loading = this.loadingController.create({
-      message: 'Connecting ...'
-    });
-    
+    this.loading = this.loadingController.create({ message: 'Conectando ...'});
   }
-  async presentLoading(loading) {
-    await loading.present();
-  }
+  async presentLoading(loading) {await loading.present();}
+  
 
   async login() {
-    this.fireauth.auth.signInWithEmailAndPassword(this.email, this.password).then(res => {
-      if (res.user) {
-        console.log(res.user);
-        this.router.navigate(['/home/settings'] );
-      }
-    })
-    .catch(err => {
-      console.log(`login failed ${err}`);
-    });
+    this.authService.login(this.user.email, this.user.password).then( res =>{
+      this.router.navigate(['/home/horario']);
+    }).catch(err => alert('los datos son incorrectos o no existe el usuario'))
   }
 
   
   
   registrar(){
-    this.router.navigate(['/registrar']);
+    this.router.navigate(['/registrar']);  
   }
-
-
-
 
   olvidar(){  
     this.loginCambio = !this.loginCambio
   }
 
-
-
   recover() {
-    this.fireauth.auth.sendPasswordResetEmail(this.email)
+    this.fireauth.auth.sendPasswordResetEmail(this.user.email)
       .then(data => {
         console.log(data);
         this.router.navigateByUrl('/login');
@@ -82,13 +69,9 @@ export class LoginPage implements OnInit {
 
 
   async facebook() {
-
-    this.fb.login(['email'])
-      .then((response: FacebookLoginResponse) => {
+    this.fb.login(['email']).then((response: FacebookLoginResponse) => {
         this.onLoginSuccess(response);
-        console.log(response.authResponse.accessToken);
       }).catch((error) => {
-        console.log(error)
         alert('error:' + error) 
       });
   }
@@ -100,13 +83,10 @@ export class LoginPage implements OnInit {
         this.router.navigate(["/home/horario"]);
         this.loading.dismiss();
       })
-
   }
+
   onLoginError(err) {
     console.log(err);
   }
- 
-  
-
 
 }

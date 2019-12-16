@@ -7,6 +7,7 @@ import { AngularFireDatabase } from '@angular/fire/database';
 
 import { AlertController } from '@ionic/angular';
 import { formatDate } from '@angular/common';
+import * as firebase from 'firebase';
 
 
 
@@ -24,11 +25,14 @@ export class EventoPage implements OnInit {
   allEventos = [];
   showAddEvent: boolean;
 
-  constructor(@Inject(LOCALE_ID) private locale: string,private alertCtrl: AlertController,
-    public firebase: AngularFireDatabase) { }
+  constructor(@Inject(LOCALE_ID) private locale: string,
+    private alertCtrl: AlertController,
+    private firebase: AngularFireDatabase) { }
 
   ngOnInit() {
-    this.loadEvent();
+    const user2 = firebase.auth().currentUser.providerData[0];
+    const correoUsuario = user2.uid;
+    this.loadEvent(correoUsuario);
   }
   @ViewChild(CalendarComponent, {static: false}) myCalendar: CalendarComponent;
 
@@ -60,7 +64,9 @@ export class EventoPage implements OnInit {
   }
 
   addEvent() {
+    const user = firebase.auth().currentUser.providerData[0];
     this.firebase.list('Evento').push({
+      usuario: user.uid,
       title: this.newEvent.title,
       startTime:  this.newEvent.startTime,
       endTime: this.newEvent.endTime,
@@ -69,11 +75,13 @@ export class EventoPage implements OnInit {
     this.showHideForm();
   }
   
-  loadEvent() {
+  loadEvent(data: String) {
     this.firebase.list('Evento').snapshotChanges(['child_added']).subscribe(actions => {
       this.allEventos = [];
-      actions.forEach(action => {
+      actions.filter(action => action.payload.exportVal().usuario == data).
+      forEach(action => {
         this.allEventos.push({
+          
           title: action.payload.exportVal().title,
           startTime:  new Date(action.payload.exportVal().startTime),
           endTime: new Date(action.payload.exportVal().endTime),

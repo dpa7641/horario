@@ -2,12 +2,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import {  NavController, IonSegment } from '@ionic/angular';
-import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-
-
-
-
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-horario',
@@ -15,18 +11,13 @@ import { Router, ActivatedRoute } from '@angular/router';
   styleUrls: ['./horario.page.scss'],
 })
 
-
-
 export class HorarioPage implements OnInit {
 
-  
   mostrarActividades: boolean;//condicional de HTML al precionar el boton de adicionar un horario
   mostrarHorarios: boolean;//condicional de HTML al precionar el boton de adicionar un horario
   adicionarHorario: boolean;//condicional de HTML al precionar el boton de adicionar una actividad
 
-
   
-  data: any;
 
   constructor(
     private firebase: AngularFireDatabase,
@@ -34,19 +25,13 @@ export class HorarioPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute
    ) { 
-    this.route.queryParams.subscribe(params => {
-      if(params && params.special){
-         this.data = params.special; 
-      }
-    });
-    console.log(this.data);
+    
    }
 
   ngOnInit() {
-    if(this.data.email == this.allHorario.user){
-
-    }
-    this.loadHorario(); 
+    const user2 = firebase.auth().currentUser.providerData[0];
+    const correoUsuario = user2.uid;
+    this.loadHorario(correoUsuario); 
   }
 
 
@@ -58,8 +43,9 @@ newHorario = {
 };
 //guardar horarios del usuario
 addHorario(){
+  const user = firebase.auth().currentUser.providerData[0];
   this.firebase.list('Horario').push({
-    user: this.data.email,
+    usuario: user.uid,
     title: this.newHorario.title,
     description: this.newHorario.description
   });
@@ -75,28 +61,23 @@ mostrarFormHorario() {
 }
 
 
-
-
 //array de carga de los horarios
 allHorario = [];
 //cargar horarios del usuario
-loadHorario() {
-  //if( this.firebase.list('horario').this ){
-    this.firebase.list('Horario').snapshotChanges(['child_added']).subscribe(actions => {
-      this.allHorario = [];
-      actions.forEach(action => {
-        this.allHorario.push({
-          user: action.payload.exportVal().user,
-          title: action.payload.exportVal().title,
-          description: action.payload.exportVal().description,
-        });
+loadHorario(data: String) {
+  this.firebase.list('Horario').snapshotChanges(['child_added']).subscribe(actions => {
+    this.allHorario = [];
+    actions.filter(action => action.payload.exportVal().usuario == data).
+    forEach(action => {
+      this.allHorario.push({
+        user: action.payload.exportVal().usuario,
+        title: action.payload.exportVal().title,
+        description: action.payload.exportVal().description,
       });
     });
-  //}else{
-  //  console.log("error de cargar");
-  //}
-  
+  });
 }
+
 
 
 //horario = 'daniel';// falta corregir y aplicar
@@ -106,11 +87,6 @@ mostrarActividad(){
 
 }
 
-
-
-
-
-  
   
 }
 

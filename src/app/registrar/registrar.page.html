@@ -1,19 +1,31 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-title>register</ion-title>
-    </ion-toolbar>
-  </ion-header>
-  
-  <ion-content >
-    <ion-item>
-      <ion-label>Email Address</ion-label>
-      <ion-input type="text" [(ngModel)]="user.email"></ion-input>
-    </ion-item>
-  
-    <ion-item>
-      <ion-label>Password</ion-label>
-      <ion-input type="password" [(ngModel)]="user.password"></ion-input>
-    </ion-item>
-  
-    <button ion-button  (click)="register()">Register</button>
-  </ion-content>
+  <ion-toolbar>
+    <ion-title>registrar</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content >
+  <ion-item>
+    <ion-label position="floating" > Nombre</ion-label>
+    <ion-input type="text" [(ngModel)]="user.username" ></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Email</ion-label>
+    <ion-input type="text" [(ngModel)]="user.email"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="user.password"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Repetir Contraseña</ion-label>
+    <ion-input type="password" [(ngModel)]="user.cpassword"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" (click)="register()">Registrar</ion-button>
+  <ion-label>Usted ya tiene una cuenta en Schedule.mo?</ion-label>
+  <ion-button expand="block" (click)="login()">Ya tengo una cuenta</ion-button>
+</ion-content>

@@ -2,15 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import {  NavController } from '@ionic/angular';
 
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore } from '@angular/fire/firestore';
-
-import {UserService} from '../../services/user.service';
 
 
-
-
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-settings',
@@ -24,24 +19,21 @@ export class SettingsPage implements OnInit {
   adicionarHorario: boolean;//condicional de HTML al precionar el boton de adicionar una actividad
 
   user: any = {}
+  
 
-  data: any;
 
   constructor(
     public navCtrl: NavController,
     private router: Router,
     private fireauth: AngularFireAuth,
-    private afs: AngularFirestore,
     private route: ActivatedRoute
-   ) {
-     this.route.queryParams.subscribe(params => {
-       if(params && params.special){
-          this.data = params.special; 
-       }
-     });
-    }
+   ) { 
+
+   }
 
   ngOnInit() {
+    const user2 = firebase.auth().currentUser.providerData[0];
+    console.log(user2.uid);
     this.fireauth.auth.onAuthStateChanged(user => {
       if (user) {
         this.user = {
@@ -64,12 +56,5 @@ export class SettingsPage implements OnInit {
       this.router.navigate(['/']);
     })
   }
-
-
-
-  
- 
-
-
 
 }
