@@ -3,6 +3,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
 import {  NavController, IonSegment } from '@ionic/angular';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-horario',
@@ -16,7 +17,7 @@ export class HorarioPage implements OnInit {
   mostrarHorarios: boolean;//condicional de HTML al precionar el boton de adicionar un horario
   adicionarHorario: boolean;//condicional de HTML al precionar el boton de adicionar una actividad
 
-
+  
 
   constructor(
     private firebase: AngularFireDatabase,
@@ -40,7 +41,9 @@ newHorario = {
 };
 //guardar horarios del usuario
 addHorario(){
+  const user = firebase.auth().currentUser.providerData[0];
   this.firebase.list('Horario').push({
+    usuario: user.uid,
     title: this.newHorario.title,
     description: this.newHorario.description
   });
@@ -60,20 +63,19 @@ mostrarFormHorario() {
 allHorario = [];
 //cargar horarios del usuario
 loadHorario() {
-  //if( this.firebase.list('horario').this ){
-    this.firebase.list('Horario').snapshotChanges(['child_added']).subscribe(actions => {
-      this.allHorario = [];
-      actions.forEach(action => {
-        this.allHorario.push({
-          user: action.payload.exportVal().user,
-          title: action.payload.exportVal().title,
-          description: action.payload.exportVal().description,
-        });
+  const user = firebase.auth().currentUser.providerData[0];
+  console.log(user.uid);
+  this.firebase.list('Horario').snapshotChanges(['child_added']).subscribe(actions => {
+    this.allHorario = [];
+    actions.forEach(action => {
+      this.allHorario.push({
+        user: action.payload.exportVal().user,
+        title: action.payload.exportVal().title,
+        description: action.payload.exportVal().description,
       });
     });
-  //}else{
-  //  console.log("error de cargar");
-  //}
+  });
+
   
 }
 

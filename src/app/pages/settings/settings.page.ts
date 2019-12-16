@@ -5,7 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
 
 
-
+import * as firebase from 'firebase';
 
 @Component({
   selector: 'app-settings',
@@ -19,8 +19,8 @@ export class SettingsPage implements OnInit {
   adicionarHorario: boolean;//condicional de HTML al precionar el boton de adicionar una actividad
 
   user: any = {}
+  
 
-  data: any;
 
   constructor(
     public navCtrl: NavController,
@@ -28,16 +28,12 @@ export class SettingsPage implements OnInit {
     private fireauth: AngularFireAuth,
     private route: ActivatedRoute
    ) { 
-     this.route.queryParams.subscribe(params => {
-       console.log(params);
-       if(params && params.special){
-          this.data = params.special
-          //this.data = JSON.parse(params.special)
-       }
-     });
+
    }
 
   ngOnInit() {
+    const user2 = firebase.auth().currentUser.providerData[0];
+    console.log(user2.uid);
     this.fireauth.auth.onAuthStateChanged(user => {
       if (user) {
         this.user = {
